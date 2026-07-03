@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block top_controls %}
+<form action="{{ url_for('validation') }}" method="post">
+    <button type="submit" class="btn btn-primary btn-sm">모델 검증 실행</button>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <h5 class="section-title">모델 검증 안내</h5>
+    {% if final_model %}
+    <p class="text-muted">최종 모델: <strong>{{ final_model.model_name }}</strong></p>
+    <div class="equation-box">{{ final_model.equation }}</div>
+    {% endif %}
+</div>
+
+{% if validation_data %}
+<div class="content-section">
+    <h5 class="section-title">적합도 지표</h5>
+    <div class="info-cards row g-3 mb-3">
+        <div class="col-md-2"><div class="info-card"><span class="label">R²</span><span class="value">{{ validation_data.metrics.R2 }}</span></div></div>
+        <div class="col-md-2"><div class="info-card"><span class="label">Adjusted R²</span><span class="value">{{ validation_data.metrics.Adjusted_R2 }}</span></div></div>
+        <div class="col-md-2"><div class="info-card"><span class="label">RMSE</span><span class="value">{{ validation_data.metrics.RMSE }}</span></div></div>
+        <div class="col-md-2"><div class="info-card"><span class="label">MAE</span><span class="value">{{ validation_data.metrics.MAE }}</span></div></div>
+        <div class="col-md-2"><div class="info-card"><span class="label">MAPE</span><span class="value">{{ validation_data.metrics.MAPE }}%</span></div></div>
+    </div>
+</div>
+
+<div class="content-section">
+    <h5 class="section-title">잔차 통계</h5>
+    <div class="info-cards row g-3 mb-3">
+        <div class="col-md-3"><div class="info-card"><span class="label">평균</span><span class="value">{{ validation_data.residual_stats.mean }}</span></div></div>
+        <div class="col-md-3"><div class="info-card"><span class="label">표준편차</span><span class="value">{{ validation_data.residual_stats.std }}</span></div></div>
+        <div class="col-md-3"><div class="info-card"><span class="label">최소값</span><span class="value">{{ validation_data.residual_stats.min }}</span></div></div>
+        <div class="col-md-3"><div class="info-card"><span class="label">최대값</span><span class="value">{{ validation_data.residual_stats.max }}</span></div></div>
+    </div>
+</div>
+
+<div class="content-section">
+    <h5 class="section-title">적합도 검정</h5>
+    {% for test_name, test_data in validation_data.test_results.items() %}
+    <div class="test-result-card mb-3">
+        <h6>
+            {% if test_name == 'shapiro' %}Shapiro-Wilk 정규성 검정
+            {% elif test_name == 'jarque_bera' %}Jarque-Bera 정규성 검정
+            {% elif test_name == 'breusch_pagan' %}Breusch-Pagan 등분산성 검정
+            {% elif test_name == 'durbin_watson' %}Durbin-Watson 자기상관 검정
+            {% else %}{{ test_name }}{% endif %}
+        </h6>
+        {% if test_data.statistic is defined %}
+        <p>통계량: {{ test_data.statistic }}{% if test_data.p_value is defined %}, p-value: {{ test_data.p_value }}{% endif %}</p>
+        {% endif %}
+        <p class="interpretation">{{ test_data.interpretation }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="content-section">
+    <h5 class="section-title">잔차분석 그래프</h5>
+    <div class="row g-3">
+        {% if plot_urls.actual_vs_pred %}
+        <div class="col-md-6"><img src="{{ plot_urls.actual_vs_pred }}" class="plot-image img-fluid" alt="실제값 vs 예측값"></div>
+        {% endif %}
+        {% if plot_urls.residual_hist %}
+        <div class="col-md-6"><img src="{{ plot_urls.residual_hist }}" class="plot-image img-fluid" alt="잔차 히스토그램"></div>
+        {% endif %}
+        {% if plot_urls.qq_plot %}
+        <div class="col-md-6"><img src="{{ plot_urls.qq_plot }}" class="plot-image img-fluid" alt="Q-Q Plot"></div>
+        {% endif %}
+        {% if plot_urls.residual_vs_pred %}
+        <div class="col-md-6"><img src="{{ plot_urls.residual_vs_pred }}" class="plot-image img-fluid" alt="잔차 vs 예측값"></div>
+        {% endif %}
+    </div>
+</div>
+
+{% if validation_data.residual_sample %}
+<div class="content-section">
+    <h5 class="section-title">잔차 샘플 (상위 20행)</h5>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead><tr><th>실제값</th><th>예측값</th><th>잔차</th></tr></thead>
+            <tbody>
+                {% for row in validation_data.residual_sample %}
+                <tr>
+                    <td>{{ row['실제값'] }}</td>
+                    <td>{{ row['예측값'] }}</td>
+                    <td>{{ row['잔차'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url_for('download_validation_result') }}" class="btn btn-outline-success btn-sm">검증 결과 CSV 다운로드</a>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

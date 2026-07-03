@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }}{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <div class="row g-4">
+        <div class="col-md-5">
+            <div class="detail-image-wrapper {% if item.is_completed() %}item-completed{% endif %}">
+                <img src="{{ item.image_url() }}" alt="{{ item.title }}" class="detail-image">
+                {% if item.is_free() %}
+                    <span class="badge-free badge-large">무료 나눔</span>
+                {% endif %}
+                {% if item.is_completed() %}
+                    <span class="badge-completed badge-large">거래완료</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="detail-info">
+                <span class="status-badge status-{{ item.status_class() }} mb-2">{{ item.status }}</span>
+                <h1 class="detail-title">{{ item.title }}</h1>
+                <p class="detail-price">{{ item.price_display() }}</p>
+
+                <div class="detail-meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label">등록자</span>
+                        <span class="meta-value">{{ item.author.username }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">등록일</span>
+                        <span class="meta-value">{{ item.created_at.strftime('%Y년 %m월 %d일 %H:%M') }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">수정일</span>
+                        <span class="meta-value">{{ item.updated_at.strftime('%Y년 %m월 %d일 %H:%M') }}</span>
+                    </div>
+                </div>
+
+                <div class="detail-description mt-4">
+                    <h5>상세 설명</h5>
+                    <p>{{ item.description }}</p>
+                </div>
+
+                <div class="detail-actions mt-4">
+                    {% if current_user.is_authenticated and item.author_id == current_user.id %}
+                        <form
+                            method="POST"
+                            action="{{ url_for('toggle_status', item_id=item.id) }}"
+                            class="d-inline"
+                        >
+                            <button type="submit" class="btn btn-primary-custom">
+                                {% if item.status == '거래가능' %}
+                                    거래완료로 변경
+                                {% else %}
+                                    거래가능으로 변경
+                                {% endif %}
+                            </button>
+                        </form>
+                        <a href="{{ url_for('item_edit', item_id=item.id) }}" class="btn btn-outline-primary-custom">
+                            수정
+                        </a>
+                        <form
+                            method="POST"
+                            action="{{ url_for('item_delete', item_id=item.id) }}"
+                            class="d-inline"
+                            onsubmit="return confirm('정말 이 물품을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.');"
+                        >
+                            <button type="submit" class="btn btn-outline-danger">삭제</button>
+                        </form>
+                    {% endif %}
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">목록으로</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

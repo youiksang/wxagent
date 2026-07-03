@@ -1,0 +1,436 @@
+/* ==========================================================================
+   아나바다 - 물품 나눔 플랫폼 스타일
+   ========================================================================== */
+
+/* CSS 변수 (테마 색상) */
+:root {
+    --primary: #2d6a4f;
+    --primary-dark: #1b4332;
+    --primary-light: #40916c;
+    --accent: #95d5b2;
+    --bg-body: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #adb5bd;
+    --border-color: #dee2e6;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --radius: 12px;
+    --free-badge: #e63946;
+    --completed-overlay: rgba(255, 255, 255, 0.6);
+}
+
+/* 기본 스타일 */
+body {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+}
+
+/* 네비게이션 */
+.bg-primary-custom {
+    background-color: var(--primary) !important;
+}
+
+.navbar-brand {
+    font-size: 1.3rem;
+}
+
+.btn-register {
+    background-color: var(--accent) !important;
+    color: var(--primary-dark) !important;
+    border-radius: 20px;
+    padding: 4px 16px !important;
+    font-weight: 600;
+}
+
+.btn-register:hover {
+    background-color: #b7e4c7 !important;
+}
+
+/* 버튼 */
+.btn-primary-custom {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 20px;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: #fff;
+}
+
+.btn-outline-primary-custom {
+    color: var(--primary);
+    border-color: var(--primary);
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.btn-outline-primary-custom:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+/* 검색/필터 영역 */
+.search-filter-section {
+    background: var(--bg-card);
+    padding: 24px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+/* 물품 카드 */
+.item-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.item-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+}
+
+.item-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+/* 거래완료 물품 - 흐리게 표시 */
+.item-card.item-completed {
+    opacity: 0.55;
+    filter: grayscale(40%);
+}
+
+.item-card.item-completed:hover {
+    opacity: 0.7;
+}
+
+.item-card-image {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: #e9ecef;
+}
+
+.item-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-card-body {
+    padding: 16px;
+}
+
+.item-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    /* 긴 제목 말줄임 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.item-card-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.item-card-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+/* 배지 */
+.badge-free {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--free-badge);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.badge-completed {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--text-secondary);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.badge-large {
+    font-size: 0.85rem;
+    padding: 6px 14px;
+}
+
+/* 거래 상태 배지 */
+.status-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.status-available {
+    background-color: #d8f3dc;
+    color: var(--primary-dark);
+}
+
+.status-reserved {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-completed {
+    background-color: #e2e3e5;
+    color: #495057;
+}
+
+/* 빈 목록 */
+.empty-state .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+}
+
+/* 상세 페이지 */
+.detail-container {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 32px;
+}
+
+.detail-image-wrapper {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background-color: #e9ecef;
+}
+
+.detail-image-wrapper.item-completed {
+    opacity: 0.6;
+    filter: grayscale(40%);
+}
+
+.detail-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+.detail-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.detail-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.detail-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 20px;
+    background-color: var(--bg-body);
+    border-radius: 8px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.meta-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.meta-value {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.detail-description h5 {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.detail-description p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    white-space: pre-wrap;
+}
+
+.detail-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* 등록/수정 폼 */
+.form-container {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 32px;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+}
+
+.required {
+    color: var(--free-badge);
+}
+
+.preview-thumb {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.disabled-field {
+    opacity: 0.5;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+/* 인증 페이지 */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+}
+
+.auth-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 32px;
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.auth-footer a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* 푸터 */
+.footer {
+    background-color: var(--primary-dark);
+    color: #d8f3dc;
+    margin-top: 40px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .detail-container {
+        padding: 20px;
+    }
+
+    .detail-meta-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-title {
+        font-size: 1.35rem;
+    }
+
+    .form-container {
+        padding: 20px;
+    }
+
+    .item-card-image {
+        height: 160px;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-filter-section {
+        padding: 16px;
+    }
+
+    .detail-actions {
+        flex-direction: column;
+    }
+
+    .detail-actions .btn {
+        width: 100%;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+}

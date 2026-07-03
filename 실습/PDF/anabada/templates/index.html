@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}물품 목록{% endblock %}
+
+{% block content %}
+<div class="search-filter-section mb-4">
+    <form method="GET" action="{{ url_for('index') }}" class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label for="searchInput" class="form-label">검색</label>
+            <input
+                type="text"
+                class="form-control"
+                id="searchInput"
+                name="q"
+                placeholder="제목 또는 내용으로 검색..."
+                value="{{ search_query }}"
+            >
+        </div>
+        <div class="col-md-3">
+            <div class="form-check mb-2">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="freeOnly"
+                    name="free_only"
+                    {% if free_only %}checked{% endif %}
+                >
+                <label class="form-check-label" for="freeOnly">무료 나눔만 보기</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary-custom w-100">검색</button>
+        </div>
+    </form>
+</div>
+
+{% if items %}
+    <div class="row g-4">
+        {% for item in items %}
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+                <a href="{{ url_for('item_detail', item_id=item.id) }}" class="item-card-link">
+                    <div class="item-card {% if item.is_completed() %}item-completed{% endif %}">
+                        <div class="item-card-image">
+                            <img src="{{ item.image_url() }}" alt="{{ item.title }}">
+                            {% if item.is_free() %}
+                                <span class="badge-free">무료 나눔</span>
+                            {% endif %}
+                            {% if item.is_completed() %}
+                                <span class="badge-completed">거래완료</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="item-card-body">
+                            <h5 class="item-card-title">{{ item.title }}</h5>
+                            <p class="item-card-price">{{ item.price_display() }}</p>
+                            <div class="item-card-meta">
+                                <span class="meta-owner">{{ item.author.username }}</span>
+                                <span class="meta-date">{{ item.created_at.strftime('%Y.%m.%d') }}</span>
+                            </div>
+                            <span class="status-badge status-{{ item.status_class() }}">{{ item.status }}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state text-center py-5">
+        <p class="empty-icon">📦</p>
+        <h4>등록된 물품이 없습니다</h4>
+        <p class="text-muted">첫 번째 물품을 등록해 보세요!</p>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('item_new') }}" class="btn btn-primary-custom">물품 등록하기</a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-primary-custom">로그인 후 등록하기</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

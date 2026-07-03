@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block top_controls %}
+<form action="{{ url_for('missing') }}" method="post">
+    <button type="submit" class="btn btn-primary btn-sm">결측치 제거 실행</button>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <h5 class="section-title">결측치 제거 안내</h5>
+    <p class="text-muted">선택된 분석 변수 중 하나라도 결측치가 있는 행을 제거합니다.</p>
+</div>
+
+{% if result_info %}
+<div class="content-section">
+    <h5 class="section-title">결측치 제거 결과</h5>
+    <div class="info-cards row g-3 mb-3">
+        <div class="col-md-3"><div class="info-card"><span class="label">기존 데이터 행 수</span><span class="value">{{ format_number(result_info.rows_before) }}개</span></div></div>
+        <div class="col-md-3"><div class="info-card"><span class="label">결측치 포함 행 수</span><span class="value">{{ format_number(result_info.missing_rows) }}개</span></div></div>
+        <div class="col-md-3"><div class="info-card"><span class="label">제거된 행 수</span><span class="value">{{ format_number(result_info.removed_rows) }}개</span></div></div>
+        <div class="col-md-3"><div class="info-card"><span class="label">현재 남은 행 수</span><span class="value">{{ format_number(result_info.rows_after) }}개</span></div></div>
+    </div>
+
+    {% if preview_html %}
+    <h6>결측치 제거 후 데이터 미리보기 (상위 10행)</h6>
+    <div class="table-responsive">{{ preview_html|safe }}</div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

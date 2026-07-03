@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF 번역기</title>
+    <style>
+        :root {
+            --bg-primary: #212121;
+            --bg-secondary: #2f2f2f;
+            --bg-tertiary: #3a3a3a;
+            --bg-input: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #444444;
+            --accent: #10a37f;
+            --accent-hover: #0d8c6d;
+            --error: #ef4444;
+            --progress-bg: #3a3a3a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Left panel */
+        .left-panel {
+            width: 380px;
+            min-width: 320px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background-color 0.2s;
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--accent);
+            background-color: var(--bg-input);
+        }
+
+        .file-upload-area.has-file {
+            border-color: var(--accent);
+            border-style: solid;
+        }
+
+        .file-upload-area input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-top: 4px;
+        }
+
+        .direction-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .direction-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background-color: var(--bg-tertiary);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: var(--text-primary);
+        }
+
+        .direction-option:hover {
+            background-color: var(--bg-input);
+        }
+
+        .direction-option input[type="radio"] {
+            accent-color: var(--accent);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: var(--accent);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: var(--progress-bg);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .status-message {
+            font-size: 0.85rem;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: var(--bg-tertiary);
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .status-message.error {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+        }
+
+        .status-message.success {
+            background-color: rgba(16, 163, 127, 0.15);
+            color: var(--accent);
+        }
+
+        /* Right panel */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            gap: 16px;
+            overflow: hidden;
+        }
+
+        .preview-row {
+            display: flex;
+            flex: 1;
+            gap: 16px;
+            min-height: 0;
+        }
+
+        .preview-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background-color: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .preview-content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-input);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .preview-content.empty {
+            color: var(--text-secondary);
+        }
+
+        .download-section {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 4px;
+        }
+
+        .btn-download {
+            padding: 10px 24px;
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .btn-download:hover:not(:disabled) {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-download:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 900px) {
+            .app-container {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            body {
+                overflow: auto;
+                height: auto;
+            }
+
+            .left-panel {
+                width: 100%;
+                min-width: unset;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .right-panel {
+                min-height: 60vh;
+            }
+
+            .preview-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Left Panel: Controls -->
+        <aside class="left-panel">
+            <div class="logo">PDF 번역기</div>
+
+            <div class="section">
+                <span class="section-label">PDF 파일 업로드</span>
+                <label class="file-upload-area" id="fileUploadArea">
+                    <input type="file" id="pdfInput" accept=".pdf">
+                    <div>클릭하여 PDF 파일 선택</div>
+                    <div class="file-name" id="fileName"></div>
+                </label>
+            </div>
+
+            <div class="section">
+                <span class="section-label">번역 방향</span>
+                <div class="direction-options">
+                    <label class="direction-option">
+                        <input type="radio" name="direction" value="en-ko" checked>
+                        <span>영어 → 한국어</span>
+                    </label>
+                    <label class="direction-option">
+                        <input type="radio" name="direction" value="ko-en">
+                        <span>한국어 → 영어</span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="startBtn" disabled>번역 시작</button>
+
+            <div class="progress-section">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+
+            <div class="status-message" id="statusMessage">PDF 파일을 선택해 주세요.</div>
+        </aside>
+
+        <!-- Right Panel: Preview -->
+        <main class="right-panel">
+            <div class="preview-row">
+                <div class="preview-box">
+                    <div class="preview-header">PDF에서 추출한 텍스트</div>
+                    <div class="preview-content empty" id="extractedPreview">
+                        추출된 텍스트가 여기에 표시됩니다.
+                    </div>
+                </div>
+                <div class="preview-box">
+                    <div class="preview-header">번역된 내용</div>
+                    <div class="preview-content empty" id="translatedPreview">
+                        번역된 내용이 실시간으로 여기에 표시됩니다.
+                    </div>
+                </div>
+            </div>
+
+            <div class="download-section">
+                <button class="btn-download" id="downloadBtn" disabled>다운로드 (.txt)</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const pdfInput = document.getElementById("pdfInput");
+        const fileUploadArea = document.getElementById("fileUploadArea");
+        const fileName = document.getElementById("fileName");
+        const startBtn = document.getElementById("startBtn");
+        const progressBar = document.getElementById("progressBar");
+        const progressText = document.getElementById("progressText");
+        const statusMessage = document.getElementById("statusMessage");
+        const extractedPreview = document.getElementById("extractedPreview");
+        const translatedPreview = document.getElementById("translatedPreview");
+        const downloadBtn = document.getElementById("downloadBtn");
+
+        let currentJobId = null;
+        let eventSource = null;
+
+        function setStatus(message, type = "") {
+            statusMessage.textContent = message;
+            statusMessage.className = "status-message" + (type ? ` ${type}` : "");
+        }
+
+        function updateProgress(percent) {
+            progressBar.style.width = `${percent}%`;
+            progressText.textContent = `${percent}%`;
+        }
+
+        function resetPreview() {
+            extractedPreview.textContent = "추출된 텍스트가 여기에 표시됩니다.";
+            extractedPreview.classList.add("empty");
+            translatedPreview.textContent = "번역된 내용이 실시간으로 여기에 표시됩니다.";
+            translatedPreview.classList.add("empty");
+            updateProgress(0);
+            downloadBtn.disabled = true;
+            currentJobId = null;
+        }
+
+        pdfInput.addEventListener("change", () => {
+            const file = pdfInput.files[0];
+            if (file) {
+                fileName.textContent = file.name;
+                fileUploadArea.classList.add("has-file");
+                startBtn.disabled = false;
+                setStatus("번역 시작 버튼을 클릭하세요.");
+                resetPreview();
+            } else {
+                fileName.textContent = "";
+                fileUploadArea.classList.remove("has-file");
+                startBtn.disabled = true;
+                setStatus("PDF 파일을 선택해 주세요.");
+            }
+        });
+
+        function closeEventSource() {
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+            }
+        }
+
+        startBtn.addEventListener("click", async () => {
+            const file = pdfInput.files[0];
+            if (!file) return;
+
+            closeEventSource();
+            startBtn.disabled = true;
+            downloadBtn.disabled = true;
+            updateProgress(0);
+            translatedPreview.textContent = "";
+            translatedPreview.classList.remove("empty");
+            setStatus("PDF 텍스트 추출 중...");
+
+            const direction = document.querySelector('input[name="direction"]:checked').value;
+            const formData = new FormData();
+            formData.append("pdf", file);
+            formData.append("direction", direction);
+
+            try {
+                const response = await fetch("/api/start", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "업로드 실패");
+                }
+
+                currentJobId = data.job_id;
+
+                extractedPreview.textContent = data.extracted_text;
+                extractedPreview.classList.remove("empty");
+
+                setStatus(`번역 진행 중... (0/${data.total_chunks} 청크)`);
+                startSSEStream(data.job_id, data.total_chunks);
+            } catch (error) {
+                setStatus(error.message, "error");
+                startBtn.disabled = false;
+            }
+        });
+
+        function startSSEStream(jobId, totalChunks) {
+            eventSource = new EventSource(`/api/stream/${jobId}`);
+
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+
+                if (data.error) {
+                    setStatus(data.error, "error");
+                    closeEventSource();
+                    startBtn.disabled = false;
+                    return;
+                }
+
+                updateProgress(data.progress);
+                translatedPreview.textContent = data.translated_text;
+                translatedPreview.classList.remove("empty");
+
+                setStatus(
+                    `번역 진행 중... (${data.current_chunk}/${data.total_chunks} 청크)`
+                );
+
+                if (data.is_complete) {
+                    setStatus("번역이 완료되었습니다!", "success");
+                    downloadBtn.disabled = false;
+                    startBtn.disabled = false;
+                    closeEventSource();
+                }
+            };
+
+            eventSource.onerror = () => {
+                if (eventSource.readyState === EventSource.CLOSED) return;
+                setStatus("스트림 연결 오류가 발생했습니다.", "error");
+                closeEventSource();
+                startBtn.disabled = false;
+            };
+        }
+
+        downloadBtn.addEventListener("click", () => {
+            if (!currentJobId) return;
+            window.location.href = `/api/download/${currentJobId}`;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block top_controls %}
+<form action="{{ url_for('eda') }}" method="post" class="eda-form">
+    <div class="row g-2 align-items-end">
+        <div class="col-auto">
+            <label class="form-label">분석 유형</label>
+            <select name="analysis_type" id="analysis_type" class="form-select form-select-sm" onchange="toggleEdaInputs()">
+                <option value="">선택하세요</option>
+                <option value="histogram" {% if selected_type == 'histogram' %}selected{% endif %}>히스토그램</option>
+                <option value="scatter" {% if selected_type == 'scatter' %}selected{% endif %}>산점도</option>
+                <option value="heatmap" {% if selected_type == 'heatmap' %}selected{% endif %}>상관관계(히트맵)</option>
+            </select>
+        </div>
+        <div class="col-auto" id="hist-input" style="display:none;">
+            <label class="form-label">변수</label>
+            <select name="hist_var" class="form-select form-select-sm">
+                {% for col in numeric_cols %}
+                <option value="{{ col }}">{{ col }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto" id="scatter-input" style="display:none;">
+            <label class="form-label">변수 (2개 이상)</label>
+            <select name="scatter_vars" class="form-select form-select-sm" multiple size="3">
+                {% for col in numeric_cols %}
+                <option value="{{ col }}">{{ col }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <input type="hidden" name="action" value="run">
+            <button type="submit" class="btn btn-primary btn-sm">분석 실행</button>
+        </div>
+        <div class="col-auto">
+            <button type="submit" formaction="{{ url_for('eda') }}" name="action" value="complete" class="btn btn-outline-secondary btn-sm">탐색적 분석 완료</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <h5 class="section-title">탐색적 분석 안내</h5>
+    <p class="text-muted">히스토그램, 산점도, 상관관계 히트맵 중 하나를 선택하여 분석하세요. 최소 1회 실행하거나 '탐색적 분석 완료' 버튼을 누르면 다음 단계로 진행할 수 있습니다.</p>
+</div>
+
+{% if eda_message %}
+<div class="alert alert-info">{{ eda_message }}</div>
+{% endif %}
+
+{% if plot_url %}
+<div class="content-section text-center">
+    <img src="{{ plot_url }}" alt="분석 그래프" class="plot-image img-fluid">
+</div>
+{% endif %}
+
+{% if corr_html %}
+<div class="content-section">
+    <h5 class="section-title">상관계수 표</h5>
+    <div class="table-responsive">{{ corr_html|safe }}</div>
+</div>
+{% endif %}
+
+{% if eda_histories %}
+<div class="content-section">
+    <h5 class="section-title">최근 분석 이력</h5>
+    <ul class="list-group list-group-flush">
+        {% for h in eda_histories %}
+        <li class="list-group-item">{{ h.analysis_type }} - {{ h.created_at.strftime('%Y-%m-%d %H:%M') if h.created_at else '' }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function toggleEdaInputs() {
+    const type = document.getElementById('analysis_type').value;
+    document.getElementById('hist-input').style.display = type === 'histogram' ? 'block' : 'none';
+    document.getElementById('scatter-input').style.display = type === 'scatter' ? 'block' : 'none';
+}
+toggleEdaInputs();
+</script>
+{% endblock %}

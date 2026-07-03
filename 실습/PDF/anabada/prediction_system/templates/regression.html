@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block top_controls %}
+<form action="{{ url_for('regression') }}" method="post" class="regression-form d-flex gap-2 align-items-end">
+    <input type="hidden" name="action" value="run">
+    <div>
+        <label class="form-label">회귀분석 방법</label>
+        <select name="method" class="form-select form-select-sm">
+            <option value="">선택하세요</option>
+            {% for key, label in methods.items() %}
+            <option value="{{ key }}" {% if selected_method == key %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">회귀분석 실행</button>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <h5 class="section-title">회귀분석 안내</h5>
+    <p class="text-muted">종속변수: <strong>{{ dependent_var }}</strong> | train 80% / test 20% (random_state=42)</p>
+</div>
+
+{% for key, result in regression_results.items() %}
+<div class="content-section regression-result-card">
+    <h5 class="section-title">{{ result.method_label }} 결과</h5>
+
+    <div class="equation-box mb-3">
+        <strong>회귀식:</strong> {{ result.equation }}
+    </div>
+
+    <div class="info-cards row g-3 mb-3">
+        <div class="col-md-2"><div class="info-card"><span class="label">R²</span><span class="value">{{ result.metrics.R2 }}</span></div></div>
+        <div class="col-md-2"><div class="info-card"><span class="label">Adjusted R²</span><span class="value">{{ result.metrics.Adjusted_R2 }}</span></div></div>
+        <div class="col-md-2"><div class="info-card"><span class="label">RMSE</span><span class="value">{{ result.metrics.RMSE }}</span></div></div>
+        <div class="col-md-2"><div class="info-card"><span class="label">MAE</span><span class="value">{{ result.metrics.MAE }}</span></div></div>
+        <div class="col-md-2"><div class="info-card"><span class="label">MAPE</span><span class="value">{{ result.metrics.MAPE }}%</span></div></div>
+        {% if result.alpha %}
+        <div class="col-md-2"><div class="info-card"><span class="label">최적 alpha</span><span class="value">{{ result.alpha }}</span></div></div>
+        {% endif %}
+    </div>
+
+    <p><strong>선택된 변수:</strong> {{ result.selected_features|join(', ') }}</p>
+
+    <div class="table-responsive mb-3">
+        <table class="table table-bordered table-sm">
+            <thead><tr><th>변수</th><th>회귀계수</th><th>p-value</th></tr></thead>
+            <tbody>
+                {% for row in result.coef_table %}
+                <tr>
+                    <td>{{ row['변수'] }}</td>
+                    <td>{{ row['회귀계수'] }}</td>
+                    <td>{{ row['p-value'] if row['p-value'] is not none else '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}
+
+{% if regression_results %}
+<div class="content-section">
+    <h5 class="section-title">최종 모델 선택</h5>
+    <form action="{{ url_for('select_model') }}" method="post" class="d-flex gap-2 align-items-end">
+        <select name="final_method" class="form-select form-select-sm" style="max-width:300px;">
+            {% for key, label in methods.items() %}
+            {% if key in regression_results %}
+            <option value="{{ key }}" {% if final_model and final_model.method == key %}selected{% endif %}>{{ label }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-success btn-sm">최종 모델 선택</button>
+    </form>
+
+    {% if final_model %}
+    <div class="alert alert-success mt-3">
+        선택된 최종 모델: <strong>{{ final_model.model_name }}</strong><br>
+        {{ final_model.equation }}
+    </div>
+    {% endif %}
+
+    <div class="mt-3">
+        <a href="{{ url_for('download_regression_result') }}" class="btn btn-outline-success btn-sm">회귀분석 결과 CSV 다운로드</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block top_controls %}
+{% if final_model %}
+<div class="simulation-header-info">
+    <p class="mb-1"><strong>모델:</strong> {{ final_model.model_name }} | <strong>종속변수:</strong> {{ final_model.dependent_var }}</p>
+    <p class="equation-box mb-0">{{ final_model.equation }}</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <h5 class="section-title">시뮬레이션 안내</h5>
+    <p class="text-muted">슬라이더를 조절하여 독립변수 값을 변경하면 종속변수 예측값이 실시간으로 업데이트됩니다.</p>
+</div>
+
+{% if dash_path %}
+<div class="content-section simulation-dash-wrapper">
+    <iframe src="{{ dash_path }}" class="simulation-iframe" title="시뮬레이션 Dash 앱"></iframe>
+</div>
+{% else %}
+<div class="alert alert-warning">Dash 시뮬레이션 앱을 불러올 수 없습니다. 최종 모델과 검증 단계를 완료했는지 확인해주세요.</div>
+{% endif %}
+
+{% if recent_simulations %}
+<div class="content-section">
+    <h5 class="section-title">최근 시뮬레이션 기록</h5>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>일시</th>
+                    <th>입력값</th>
+                    <th>예측값</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in recent_simulations %}
+                <tr>
+                    <td>{{ rec.created_at.strftime('%Y-%m-%d %H:%M') if rec.created_at else '' }}</td>
+                    <td>
+                        {% for k, v in rec.inputs.items() %}
+                        {{ k }}={{ v }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ "%.4f"|format(rec.predicted_value) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.simulation-iframe {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+</style>
+{% endblock %}

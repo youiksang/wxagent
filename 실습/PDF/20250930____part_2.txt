@@ -1,0 +1,46 @@
+[Monthly Research] Steel  
+Mirae Asset Securities Research   3  
+2025.9.30  
+Investment Summary  
+China's government maintains consistent production cuts. Decrease in crude steel production, weak demand  
+As the Chinese government's consistent intent to cut production continues, the crude steel production in China for 2025 (cumulative from January to August) is approximately 670 million tons (-2.8%, YoY), representing a decrease of about 19.5 million tons compared to the same period last year. This is about 40% of the annual production cut target of 50 million tons mentioned at the National People's Congress in March 2025. During the same period, global crude steel production was about 1.23 billion tons, a decrease of 0.6% compared to the previous year.  
+On the other hand, the recovery of steel demand in China is delayed. The area of housing starts in China has continued to decline compared to the previous year since August 2021. As of the first half of 2025, the area of unsold real estate is also reaching new highs. The prices of Chinese steel products are showing a more pronounced weakness in rebar prices, which are more closely related to the construction industry compared to flat products.  
+Continued anti-dumping actions against Chinese products by various countries. Decision to impose domestic anti-dumping duties  
+Despite the delay in the recovery of steel demand in China, we believe that the investment point for supply-demand improvement due to the alleviation of oversupply from China remains valid. Anti-dumping complaints against Chinese steel products by various countries aimed at protecting their own steel industries have continued throughout the year. In South Korea, following the anti-dumping complaint against Chinese hot-rolled plates, the results of the provisional anti-dumping complaint against Chinese and Japanese hot-rolled steel plates were announced. On September 23, the Ministry of Strategy and Finance decided to impose provisional anti-dumping duties on Chinese and Japanese hot-rolled steel plates. We expect that the decrease in import volumes from China and Japan, which surged ahead of the imposition of dumping duties, along with rising domestic prices, will contribute to the recovery of the performance of steel companies (POSCO Holdings, Hyundai Steel).  
+Meanwhile, the government is expected to announce a "Steel Industry Competitiveness Enhancement Plan" in October. Rather than artificially reducing production capacity, effects are anticipated from R&D and financial support, inducing the sale of non-core businesses/assets, and strengthening defenses against imports such as circumvention dumping.  
+3Q25 Preview: Continued improvement in steel sector performance. Maintain top pick Hyundai Steel  
+In the third quarter of 2025, Hyundai Steel's consolidated operating profit is estimated to be 91.7 billion won (+78.2%, YoY), slightly exceeding the consensus (85.5 billion won, 1-month basis). The separate performance is expected to turn to profit compared to the previous quarter due to the improvement in the spread of flat products, while the performance of consolidated subsidiaries is expected to decrease due to the disappearance of one-time profit and loss improvement effects. For this quarter, the performance recovery in the long steel sector is expected to be limited due to the impact of construction-related incidents. The effect of the pre-order system for rebar distribution introduced in September is also understood to have had little contribution to performance in the short term.  
+In the third quarter of 2025, POSCO Holdings' consolidated operating profit is estimated to be 570.2 billion won (-23.3%, YoY), which is expected to fall short of market expectations (operating profit of 631 billion won, 1-month basis) by 10%. The profit and loss in the steel sector is expected to increase compared to the seasonal peak in the second quarter due to the expansion of the decline in raw material prices relative to product prices. However, the consolidated operating profit is expected to be sluggish due to the widening losses of POSCO E&C. POSCO E&C is expected to reflect direct and indirect costs due to the suspension of all construction sites as a result of the incident.
+
+[Monthly Research] Steel  
+4   Mirae Asset Securities Research  
+2025.9.30  
+China's crude steel production, decline compared to global levels expands  
+In 2025 (cumulative from January to August), China's crude steel production is approximately 670 million tons (-2.8%, YoY), a decrease of about 19.5 million tons compared to the same period last year. This is about 40% of the annual reduction target of 50 million tons mentioned at the National People's Congress in March 2025. During the same period, global crude steel production is about 1.23 billion tons, a decrease of 0.6% compared to the same period last year.  
+In 2025, the Chinese government's consistent intention to reduce production continues. In July, at the 6th Central Financial and Economic Commission, President Xi Jinping emphasized controlling low-price and disorderly competition and the orderly withdrawal of outdated production capacity. Recently, a "Work Plan for Stable Growth of the Steel Industry (2025-2026)" announced by five Chinese ministries is understood to include an annual growth target of 4%, as well as quality improvement, structural optimization, and a ban on the expansion of new production capacity. The 15th Five-Year Plan for China, scheduled to be announced in 2025, is also expected to confirm similar policy directions.  
+Figure 1. Year-on-year change rate of global and Chinese crude steel production [2025 figures are cumulative as of August]  
+
+Source: WSA, Mirae Asset Securities Research Center  
+
+Table 1. Key information regarding China's steel industry in 2025  
+Content Timing Details  
+Two Sessions (National Development and Reform Commission Report) 25.03.04~25.03.11  
+- The National Development and Reform Commission proposed to "continuously implement crude steel production management to promote the reduction of the steel industry's scale and restructuring."  
+- This is the first time since 2019 that the National Development and Reform Commission has proposed steel production cuts at the Two Sessions.  
+- Although no specific reduction targets were presented, media reports indicated an estimated annual reduction plan of 50 million tons.  
+6th Central Financial and Economic Commission 25.07.01 - Xi Jinping emphasized controlling low-price competition and disorderly competition among enterprises and the orderly exit of outdated production capacity.  
+Rumors of production cuts in Tangshan 25.07.02 - The Chinese government notified steel mills in the Tangshan area to reduce production of sintering machines by 30% from July 4 to 15.  
+Two-Year Growth Plan for the Steel Industry 25.09.22  
+- The Chinese government identified supply-demand imbalance issues due to oversupply as factors hindering the development of the steel industry.  
+- The plan presents policies such as a ban on additional steel production capacity, precise production control, and closure of outdated and inefficient facilities.  
+- Accordingly, the annual growth rate for the steel industry for 2025-2026 is set at 4%.  
+Source: Media reports, Mirae Asset Securities Research Center  
+
+-10  
+-5  
+0  
+5  
+10  
+15  
+81 83 85 87 89 91 93 95 97 99 01 03 05 07 09 11 13 15 17 19 21 23 25  
+Global YoY China YoY (%)

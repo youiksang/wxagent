@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}회원가입{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="auth-title">회원가입</h2>
+        <form method="POST" action="{{ url_for('register') }}">
+            <div class="mb-3">
+                <label for="username" class="form-label">사용자 이름</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    name="username"
+                    required
+                    autofocus
+                    maxlength="80"
+                    placeholder="사용자 이름"
+                >
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">비밀번호</label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    required
+                    placeholder="비밀번호"
+                >
+            </div>
+            <div class="mb-3">
+                <label for="password_confirm" class="form-label">비밀번호 확인</label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password_confirm"
+                    name="password_confirm"
+                    required
+                    placeholder="비밀번호 확인"
+                >
+            </div>
+            <button type="submit" class="btn btn-primary-custom w-100">회원가입</button>
+        </form>
+        <p class="auth-footer text-center mt-3 mb-0">
+            이미 계정이 있으신가요? <a href="{{ url_for('login') }}">로그인</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

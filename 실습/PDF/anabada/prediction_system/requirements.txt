@@ -1,0 +1,15 @@
+Flask
+Flask-SQLAlchemy
+pandas
+numpy
+openpyxl
+xlrd
+matplotlib
+seaborn
+statsmodels
+scikit-learn
+plotly
+dash
+joblib
+Werkzeug
+scipy

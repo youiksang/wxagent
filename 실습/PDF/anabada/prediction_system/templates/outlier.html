@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block top_controls %}
+<div class="outlier-controls d-flex flex-wrap gap-2 align-items-center">
+    <form action="{{ url_for('outlier') }}" method="post" class="d-flex flex-wrap gap-2 align-items-center">
+        <input type="hidden" name="action" value="explore">
+        <button type="submit" class="btn btn-outline-primary btn-sm">이상치 탐색</button>
+    </form>
+    {% if detection_results %}
+    <form action="{{ url_for('outlier') }}" method="post" class="d-flex flex-wrap gap-2 align-items-center">
+        <input type="hidden" name="action" value="remove">
+        <span class="text-muted small">제거할 변수:</span>
+        {% for item in detection_results %}
+        <label class="form-check form-check-inline mb-0">
+            <input class="form-check-input" type="checkbox" name="remove_vars" value="{{ item.variable }}">
+            {{ item.variable }}
+        </label>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-sm">이상치 제거</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <h5 class="section-title">이상치 탐색 안내</h5>
+    <p class="text-muted">숫자형 변수에 대해 평균 ± 3×표준편차 범위 밖의 값을 이상치로 판단합니다.</p>
+</div>
+
+{% if detection_results %}
+<div class="content-section">
+    <h5 class="section-title">변수별 이상치 탐색 결과</h5>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-sm">
+            <thead>
+                <tr>
+                    <th>변수명</th>
+                    <th>평균</th>
+                    <th>표준편차</th>
+                    <th>하한값</th>
+                    <th>상한값</th>
+                    <th>이상치 개수</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in detection_results %}
+                <tr>
+                    <td>{{ item.variable }}</td>
+                    <td>{{ item.mean }}</td>
+                    <td>{{ item.std }}</td>
+                    <td>{{ item.lower }}</td>
+                    <td>{{ item.upper }}</td>
+                    <td>{{ format_number(item.outlier_count) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% elif not numeric_available %}
+<div class="alert alert-warning">숫자형 변수가 없어 이상치 탐색을 수행할 수 없습니다. 탐색만 완료 처리할 수 있습니다.</div>
+{% endif %}
+
+{% if result_info %}
+<div class="content-section">
+    <h5 class="section-title">이상치 처리 결과</h5>
+    <div class="info-cards row g-3 mb-3">
+        <div class="col-md-4"><div class="info-card"><span class="label">처리 전 행 수</span><span class="value">{{ format_number(result_info.rows_before) }}개</span></div></div>
+        <div class="col-md-4"><div class="info-card"><span class="label">제거된 행 수</span><span class="value">{{ format_number(result_info.removed_rows) }}개</span></div></div>
+        <div class="col-md-4"><div class="info-card"><span class="label">처리 후 행 수</span><span class="value">{{ format_number(result_info.rows_after) }}개</span></div></div>
+    </div>
+    {% if result_info.removed_vars %}
+    <p><strong>제거 대상 변수:</strong> {{ result_info.removed_vars|join(', ') }}</p>
+    {% endif %}
+
+    {% if preview_html %}
+    <h6>이상치 제거 후 데이터 미리보기 (상위 10행)</h6>
+    <div class="table-responsive">{{ preview_html|safe }}</div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if item %}물품 수정{% else %}물품 등록{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="form-title">
+        {% if item %}물품 수정{% else %}물품 등록{% endif %}
+    </h2>
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        action="{% if item %}{{ url_for('item_edit', item_id=item.id) }}{% else %}{{ url_for('item_new') }}{% endif %}"
+        class="item-form"
+    >
+        <div class="mb-3">
+            <label for="title" class="form-label">물품명 <span class="required">*</span></label>
+            <input
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                required
+                maxlength="200"
+                value="{{ form_data.title if form_data else (item.title if item else '') }}"
+                placeholder="물품명을 입력하세요"
+            >
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">물품 설명 <span class="required">*</span></label>
+            <textarea
+                class="form-control"
+                id="description"
+                name="description"
+                rows="5"
+                required
+                placeholder="물품에 대한 상세 설명을 입력하세요"
+            >{{ form_data.description if form_data else (item.description if item else '') }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="image" class="form-label">물품 사진</label>
+            {% if item and item.image_filename %}
+                <div class="current-image mb-2">
+                    <img src="{{ item.image_url() }}" alt="현재 이미지" class="preview-thumb">
+                    <small class="text-muted d-block">새 이미지를 업로드하면 기존 이미지가 교체됩니다.</small>
+                </div>
+            {% endif %}
+            <input
+                type="file"
+                class="form-control"
+                id="image"
+                name="image"
+                accept=".png,.jpg,.jpeg,.gif"
+            >
+            <small class="form-text text-muted">png, jpg, jpeg, gif 형식만 가능 (최대 16MB)</small>
+        </div>
+
+        <div class="mb-3">
+            <div class="form-check">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="is_free"
+                    name="is_free"
+                    {% if form_data and form_data.is_free %}checked
+                    {% elif item and item.is_free() %}checked{% endif %}
+                >
+                <label class="form-check-label" for="is_free">무료 나눔</label>
+            </div>
+        </div>
+
+        <div class="mb-3" id="priceGroup">
+            <label for="price" class="form-label">가격 (원)</label>
+            <input
+                type="number"
+                class="form-control"
+                id="price"
+                name="price"
+                min="0"
+                step="100"
+                value="{{ form_data.price if form_data else (item.price if item else 0) }}"
+                placeholder="0"
+            >
+            <small class="form-text text-muted">가격이 0원이거나 무료 나눔을 선택하면 무료로 표시됩니다.</small>
+        </div>
+
+        {% if item %}
+        <div class="mb-3">
+            <label for="status" class="form-label">거래 상태</label>
+            <select class="form-select" id="status" name="status">
+                {% for st in statuses %}
+                    <option
+                        value="{{ st }}"
+                        {% if form_data and form_data.status == st %}selected
+                        {% elif item and item.status == st %}selected{% endif %}
+                    >
+                        {{ st }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary-custom">
+                {% if item %}수정 완료{% else %}등록하기{% endif %}
+            </button>
+            <a href="{% if item %}{{ url_for('item_detail', item_id=item.id) }}{% else %}{{ url_for('index') }}{% endif %}" class="btn btn-secondary">
+                취소
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const isFreeCheckbox = document.getElementById('is_free');
+    const priceInput = document.getElementById('price');
+    const priceGroup = document.getElementById('priceGroup');
+
+    function togglePriceField() {
+        if (isFreeCheckbox.checked) {
+            priceInput.value = 0;
+            priceInput.disabled = true;
+            priceGroup.classList.add('disabled-field');
+        } else {
+            priceInput.disabled = false;
+            priceGroup.classList.remove('disabled-field');
+        }
+    }
+
+    isFreeCheckbox.addEventListener('change', togglePriceField);
+    togglePriceField();
+</script>
+{% endblock %}
